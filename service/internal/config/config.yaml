@@ -1,0 +1,7 @@
+path: "logs/app.log"
+level: "local"
+source: true
+service_name: "service-wallet"
+writer: 
+database_url: "user=wallet_user password=wallet_pass dbname=wallet_db host=db port=5432 sslmode=disable"
+app_adr: ":8080"

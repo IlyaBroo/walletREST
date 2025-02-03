@@ -1,0 +1,51 @@
+version: '3.8'
+networks:
+  test:
+    driver: bridge
+
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}
+    expose:
+      - ${POSTGRES_PORT_EXPOSE}
+    networks:
+      - test
+    command: 
+      - "postgres"
+      - "-c"
+      - "max_connections=1000"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=4GB"
+      - "-c"
+      - "work_mem=16MB"
+      - "-c"
+      - "maintenance_work_mem=128MB"
+  app:
+    build:
+      context: service
+    depends_on:
+      - db
+    ports:
+      - ${APP_PORT}
+    volumes:
+      - ${LOGS_VOLUME_PATH} 
+    networks:
+      - test
+
+  migrate:
+    build:
+      context: .
+      dockerfile: ./dockerfile.migrations
+    command: ["up"]
+    depends_on:
+      - db
+    networks:
+      - test
