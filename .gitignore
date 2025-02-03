@@ -60,4 +60,6 @@ Temporary Items
 
 .env
 /logs
-/vendor
+/vendor/
+/service/vendor/
+vendor/
